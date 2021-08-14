@@ -1,5 +1,6 @@
-class Player
+# frozen_string_literal: true
 
+class Player
   attr_accessor :deposit, :cards, :points, :status
   attr_reader :name
 
@@ -12,7 +13,7 @@ class Player
   end
 
   def excess?
-    points > 21 ? true : false
+    points > 21
   end
 
   def nullify!
@@ -20,5 +21,4 @@ class Player
     self.points = 0
     self.status = 0
   end
-
 end
