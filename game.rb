@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'player'
-
 class Game
   attr_accessor :bank, :players, :card_deck
   attr_reader :player, :dealer
