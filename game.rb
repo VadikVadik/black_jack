@@ -3,13 +3,13 @@ require_relative 'player.rb'
 class Game
 
   attr_accessor :bank, :players, :card_deck
-  attr_reader :player, :diler
+  attr_reader :player, :dealer
 
-  def initialize(player, diler)
+  def initialize(player, dealer)
       @player = player
-      @diler = diler
+      @dealer = dealer
       @bank = 0
-      @players = [player, diler]
+      @players = [player, dealer]
       @card_deck = [
         {nominal: 2, title: "2+"}, {nominal: 2, title: "2<3"},
         {nominal: 2, title: "2^"}, {nominal: 2, title: "2<>"},
@@ -43,6 +43,10 @@ class Game
   end
 
   def deal_cards
+    players.each do |player|
+      self.card_deck += player.cards
+      player.nullify!
+    end
     players.each { |player| 2.times { add_card(player) } }
   end
 
@@ -56,22 +60,44 @@ class Game
     end
   end
 
+  def card
+    new_card = card_deck.sample
+    card_deck.delete(new_card)
+    return new_card
+  end
+
   def bid(player, amount)
       self.bank += amount
       player.deposit -= amount
   end
 
-  def vin(player)
-    player.deposit += bank
-    bank = 0
+  def dealer_move
+    dealer.points >= 17 ? return : add_card(dealer)
   end
 
-  protected
+  def vin(player)
+    player.deposit += bank
+    self.bank = 0
+    player.status = 1
+  end
 
-  def card
-    new_card = card_deck.sample
-    card_deck.delete(new_card)
-    return new_card
+  def draw
+    players.each { |player| player.deposit += (self.bank / 2) }
+    self.bank = 0
+  end
+
+  def draw?
+    player.points == dealer.points || (player.points > 21 && dealer.points > 21)
+  end
+
+  def end_game
+    if draw?
+      draw
+    elsif !player.excess? && dealer.excess? || (player.points > dealer.points && !player.excess?)
+      vin(player)
+    elsif player.excess? && !dealer.excess? || (player.points < dealer.points && !dealer.excess?)
+      vin(dealer)
+    end
   end
 
 end
