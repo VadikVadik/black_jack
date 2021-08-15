@@ -12,7 +12,8 @@ class ResultPrinter
     puts
   end
 
-  def print_status
+  def print_process
+    game.start_game
     system("clear") || system("cls")
     separator
     puts "***В БАНКЕ ИГРЫ: #{game.bank}$***"
@@ -26,6 +27,7 @@ class ResultPrinter
     puts "Дилер:"
     amount.times { puts "*" }
     separator
+    game.main_game(move)
   end
 
   def print_result
@@ -45,27 +47,6 @@ class ResultPrinter
     separator
     puts "Очки дилера: #{game.dealer.points}, депозит дилера: #{game.dealer.deposit}$"
     separator
-  end
-
-  def start_game
-    game.deal_cards
-    game.players.each { |player| game.bid(player, 10) }
-    print_status
-  end
-
-  def main_game(choise)
-    case choise
-    when 1
-      game.dealer_move
-      game.end_game
-    when 2
-      game.add_card(game.player)
-      game.dealer_move
-      game.end_game
-    when 3
-      game.end_game
-    end
-    print_result
   end
 
   def move

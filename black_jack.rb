@@ -14,9 +14,8 @@ game = Game.new(user, dealer)
 printer = ResultPrinter.new(game)
 
 loop do
-  printer.start_game
-  next_move = printer.move
-  printer.main_game(next_move)
+  printer.print_process
+  printer.print_result
 
   puts "Играть еще? 1. Да 2. Нет"
   user_input = gets.chomp.to_i

@@ -89,6 +89,25 @@ class Game
     player.points == dealer.points || (player.points > 21 && dealer.points > 21)
   end
 
+  def start_game
+    deal_cards
+    players.each { |player| bid(player, 10) }
+  end
+
+  def main_game(choise)
+    case choise
+    when 1
+      dealer_move
+      end_game
+    when 2
+      add_card(player)
+      dealer_move
+      end_game
+    when 3
+      end_game
+    end
+  end
+
   def end_game
     if draw?
       draw
